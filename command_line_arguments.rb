@@ -5,7 +5,7 @@ class CommandLineArguments
   def initialize(arguments)
     @options = {}
     optionsParser = OptionParser.new do |opts|
-      opts.banner = "USAGE: phretrieve.rb -f filename[,filename,...] -d destination-directory -n nef-directory"
+      opts.banner = "USAGE: phretrieve.rb -f filename[,filename,...] -d destination-directory -n nef-dir"
       extractFilenames(opts)
       extractDestination(opts)
       extractNefDir(opts)
@@ -21,21 +21,9 @@ class CommandLineArguments
   end
 
   def checkForMissingArguments
-    raise OptionParser::MissingArgument if @options[:source].nil?
+    raise OptionParser::MissingArgument if @options[:filenames].nil?
     raise OptionParser::MissingArgument if @options[:destination].nil?
-    raise OptionParser::MissingArgument if @options[:picasa].nil?
-  end
-
-  def extractPicasa(opts)
-    opts.on("-p", "--picasa-dir PICASA", "Picasa directory.") do |p|
-      @options[:picasa] = p
-    end
-  end
-
-  def extractDestination(opts)
-    opts.on("-d", "--destination-dir DESTINATION", "Destination directory.") do |d|
-      @options[:destination] = d
-    end
+    raise OptionParser::MissingArgument if @options[:nef].nil?
   end
 
   def extractFilenames(opts)
@@ -44,17 +32,24 @@ class CommandLineArguments
     end
   end
 
+  def extractDestination(opts)
+    opts.on("-d", "--destination-dir DESTINATION", "Destination directory to store the retrieved NEFs.") do |d|
+      @options[:destination] = d
+    end
+  end
+
+  def extractNefDir(opts)
+    opts.on("-n", "--nef-dir NEF", "Top level NEF directory.") do |n|
+      @options[:nef] = p
+    end
+  end
+
   def printUsageError(e, optionsParser)
     abort("#{e}\n#{optionsParser}")
   end
 
-  def sourceDirectory()
-    sourceArg = File.expand_path(@options[:source], File.dirname(__FILE__))
-    if self.directoryExists?(sourceArg)
-      p sourceArg
-      return sourceArg
-    end
-    abort("Directory '#{sourceArg}' does not exist!")
+  def filenames()
+    filenamesArg = Filenames.parseCommaSeperatedList(@options[:source])
   end
 
   def destinationDirectory()
@@ -65,12 +60,12 @@ class CommandLineArguments
     abort("Directory '#{destinationArg}' does not exist!")
   end
 
-  def picasaDirectory()
-    picasaArg = File.expand_path(@options[:picasa], File.dirname(__FILE__))
-    if self.directoryExists?(picasaArg)
-      return picasaArg
+  def nefDirectory()
+    nefArg = File.expand_path(@options[:nef], File.dirname(__FILE__))
+    if self.directoryExists?(nefArg)
+      return nefArg
     end
-    abort("Directory '#{picasaArg}' does not exist!")
+    abort("Directory '#{nefArg}' does not exist!")
   end
 
   def directoryExists?(path)
