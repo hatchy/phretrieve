@@ -1,0 +1,18 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    OptionParser (0.5.1)
+    exiftool (0.6.0)
+      json
+    exiftool_vendored (9.60.0)
+      exiftool (>= 0.6.0)
+    json (1.8.1)
+    ruby-progressbar (1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  OptionParser
+  exiftool_vendored
+  ruby-progressbar
